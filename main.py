@@ -7,7 +7,7 @@ from threading import Thread
 from flask import Flask
 from telebot import TeleBot, types
 
-# --- [ سيرفر Keep-Alive لضمان عدم نوم البوت ] ---
+# --- [ سيرفر Keep-Alive لمنع نوم البوت على Render ] ---
 app = Flask(__name__)
 
 @app.route('/')
@@ -23,7 +23,7 @@ def keep_alive():
     t.daemon = True
     t.start()
 
-# --- [ إعدادات البوت ] ---
+# --- [ إعدادات البوت الأساسية ] ---
 TOKEN = os.getenv("BOT_TOKEN")
 bot = TeleBot(TOKEN)
 
@@ -93,7 +93,6 @@ def callback_query(call):
     bot.answer_callback_query(call.id, f"بدء صيد {platform.upper()}...")
     bot.send_message(call.message.chat.id, f"🎯 **بدء صيد يوزرات {platform.upper()}...**\nسأخبرك فور إيجاد يوزر متاح.", parse_mode="Markdown")
 
-    # حلقة الصيد
     while active_hunts.get(user_id, False):
         username = generate_username(platform)
         if check_availability(platform, username):
